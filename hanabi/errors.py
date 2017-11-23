@@ -1,0 +1,2 @@
+class TooManyCardsInHandError(Exception):
+    pass

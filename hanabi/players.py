@@ -1,4 +1,6 @@
 """Hanabi player interface."""
+from hanabi.errors import TooManyCardsInHandError
+
 
 class Player(object):
     def __init__(self, card_limit):
@@ -15,4 +17,8 @@ class Player(object):
         pass
 
     def receive_cards(self, *cards):
-        pass
+        if len(self.cards)+len(cards) <= self.limit:
+            self.cards.extend(cards)
+        else:
+            raise TooManyCardsInHandError(
+                "Maximum of %s cards allowed in hand" % self.limit)
