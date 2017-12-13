@@ -1,3 +1,4 @@
+import logging
 from collections import namedtuple
 from random import shuffle
 
@@ -15,6 +16,8 @@ NUM_PLAYERS_TO_NUM_CARDS_PER_HAND = {
 }
 STARTING_CLUE_TOKENS = 8
 STARTING_FUSE_TOKENS = 3
+
+logger = logging.getLogger(__name__)
 
 
 def new_deck():
@@ -47,10 +50,13 @@ def new_game():
     shuffle(players)
     current_player_index = 0
     while not game_over():
+        logger.info("It is now Player {}'s turn".format(
+            current_player_index+1))
         current_player = players[current_player_index]
         action = current_player.choose_action()
         if action == 'discard':
             card = current_player.discard_card()
+            logger.info("Player chose to discard {}".format(card))
 
         if not current_player.has_enough_cards():
             current_player.receive_cards(deck.pop())
@@ -58,5 +64,17 @@ def new_game():
         current_player_index = (current_player_index+1) % num_players
 
 
+def set_up_logging():
+    standard_handler = logging.StreamHandler()
+    formatter = logging.Formatter(
+        '%(asctime)s: %(message)s',
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+    standard_handler.setFormatter(formatter)
+    logger.addHandler(standard_handler)
+    logger.setLevel(logging.INFO)
+
+
 if __name__ == '__main__':
+    set_up_logging()
     new_game()
