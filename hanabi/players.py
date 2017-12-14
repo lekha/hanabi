@@ -30,6 +30,10 @@ class Player(object):
             raise TooManyCardsInHandError(
                 "Maximum of %s cards allowed in hand" % self.limit)
 
+    def update_priors(
+            self, player_cards, firework_stacks, clue_tokens, fuse_tokens):
+        return None
+
 
 class DrunkPlayer(Player):
     def choose_action(self):

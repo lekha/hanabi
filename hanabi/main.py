@@ -74,12 +74,25 @@ def new_game():
         if not current_player.has_enough_cards():
             current_player.receive_cards(deck.pop())
 
+        for player in players:
+            player.update_priors(
+                dict(
+                    (i, _player.cards)
+                    for i, _player in enumerate(players)
+                    if _player != player
+                ),
+                firework_stacks,
+                remaining_clue_tokens,
+                remaining_fuse_tokens,
+            )
+
         current_player_index = (current_player_index+1) % num_players
 
     logger.info("Game over!")
 
     final_score = sum(len(stack) for stack in firework_stacks.values())
     logger.info("Final score: {}".format(final_score))
+
 
 def set_up_logging():
     standard_handler = logging.StreamHandler()
