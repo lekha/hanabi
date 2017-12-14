@@ -1,4 +1,6 @@
 """Hanabi player interface."""
+import random
+
 from hanabi.errors import TooManyCardsInHandError
 
 class Player(object):
@@ -31,9 +33,16 @@ class Player(object):
 
 class DrunkPlayer(Player):
     def choose_action(self):
-        return 'discard'
+        actions = ['discard', 'play']
+        action_to_perform = random.choice(actions)
+        return action_to_perform
 
     def discard_card(self):
         assert len(self.cards) != 0
         discarded_card = self.cards.pop(0)
         return discarded_card
+
+    def play_card(self):
+        assert len(self.cards) != 0
+        card_to_play = self.cards.pop(0)
+        return card_to_play

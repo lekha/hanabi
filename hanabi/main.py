@@ -50,19 +50,36 @@ def new_game():
     shuffle(players)
     current_player_index = 0
     while not game_over():
-        logger.info("It is now Player {}'s turn".format(
+        logger.info("Player {}'s turn".format(
             current_player_index+1))
         current_player = players[current_player_index]
         action = current_player.choose_action()
+
         if action == 'discard':
             card = current_player.discard_card()
             logger.info("Player chose to discard {}".format(card))
+
+        elif action == 'play':
+            card = current_player.play_card()
+            stack = firework_stacks[card.color]
+            logger.info("Player played {}".format(card))
+            if card.rank == len(stack)+1:
+                stack.append(card)
+                logger.info("Success!")
+            else:
+                remaining_fuse_tokens -= 1
+                logger.info("Oops. Remaining fuse tokens: {}".format(
+                    remaining_fuse_tokens))
 
         if not current_player.has_enough_cards():
             current_player.receive_cards(deck.pop())
 
         current_player_index = (current_player_index+1) % num_players
 
+    logger.info("Game over!")
+
+    final_score = sum(len(stack) for stack in firework_stacks.values())
+    logger.info("Final score: {}".format(final_score))
 
 def set_up_logging():
     standard_handler = logging.StreamHandler()
